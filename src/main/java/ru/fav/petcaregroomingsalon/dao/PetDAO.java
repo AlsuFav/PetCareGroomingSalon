@@ -24,7 +24,13 @@ public class PetDAO {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pet.getName());
             statement.setString(2, pet.getSpecies());
-            statement.setInt(3, pet.getBreed().getId());
+
+            if (pet.getBreed() != null) {
+                statement.setInt(3, pet.getBreed().getId());
+            } else {
+                statement.setNull(3, Types.INTEGER);
+            }
+
             statement.setDate(4, Date.valueOf(pet.getBirthDate().toLocalDate()));
             statement.setInt(5, pet.getOwner().getId());
             statement.executeUpdate();
@@ -98,7 +104,13 @@ public class PetDAO {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, pet.getName());
             statement.setString(2, pet.getSpecies());
-            statement.setInt(3, pet.getBreed().getId());
+
+            if (pet.getBreed() != null) {
+                statement.setInt(3, pet.getBreed().getId());
+            } else {
+                statement.setNull(3, Types.INTEGER);
+            }
+
             statement.setDate(4, pet.getBirthDate());
             statement.setInt(5, pet.getOwner().getId());
             statement.setInt(6, pet.getId());

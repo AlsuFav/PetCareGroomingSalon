@@ -10,10 +10,10 @@ import java.util.logging.Logger;
 
 
 public class DriverManagerDataSource implements DataSource {
-    private static final String driverClassName = "org.postgresql.Driver";
-    private static final String url = "jdbc:postgresql://localhost:5432/petcare_db";
-    private static final String username = "postgres";
-    private static final String password = "qwerty123";
+    private static final String driverClassName = DatabaseConfig.get("db.driver");
+    private static final String url = DatabaseConfig.get("db.url");
+    private static final String username = DatabaseConfig.get("db.username");
+    private static final String password = DatabaseConfig.get("db.password");
 
     private static DriverManagerDataSource instance;
 

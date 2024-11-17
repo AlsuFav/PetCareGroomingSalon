@@ -51,6 +51,27 @@ public class TimeSlotDAO {
         return null;
     }
 
+    public TimeSlot findByStartTimeAndGroomerId(Timestamp startTime, int groomerId) throws SQLException {
+        String sql = "SELECT * FROM time_slot where start_time = ? and groomer_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setTimestamp(1, startTime);
+            statement.setInt(2, groomerId);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                Groomer groomer = groomerDao.findById(groomerId);
+                return new TimeSlot(
+                        resultSet.getInt("id"),
+                        groomer,
+                        startTime,
+                        resultSet.getTimestamp("end_time"),
+                        resultSet.getBoolean("taken")
+                );
+            }
+        }
+        return null;
+    }
+
 
     public List<TimeSlot> findAll() throws SQLException {
         List<TimeSlot> timeSlots = new ArrayList<>();

@@ -47,7 +47,7 @@ public class ClientDAO {
         return null;
     }
 
-    public Client findByEmailAndPassword(String email, String password) {
+    public Client findByEmailAndPassword(String email, String password) throws SQLException {
         String sql = "SELECT * FROM client WHERE email = ? AND password = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -59,17 +59,37 @@ public class ClientDAO {
                             resultSet.getInt("id"),
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
-                            resultSet.getString("email"),
+                            email,
+                            resultSet.getString("phone"),
+                            password
+                    );
+                }
+            }
+        }
+        return null;
+    }
+
+    public Client findByEmail(String email) throws SQLException {
+        String sql = "SELECT * FROM client WHERE email = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, email);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    return new Client(
+                            resultSet.getInt("id"),
+                            resultSet.getString("first_name"),
+                            resultSet.getString("last_name"),
+                            email,
                             resultSet.getString("phone"),
                             resultSet.getString("password")
                     );
                 }
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
         return null;
     }
+
 
     public List<Client> findAll() throws SQLException {
         List<Client> clients = new ArrayList<>();

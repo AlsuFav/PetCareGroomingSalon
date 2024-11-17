@@ -24,7 +24,7 @@ public class AppointmentOptionsSelectionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("client") != null) {
+
         Client client = (Client) session.getAttribute("client");
 
         List<Pet> pets;
@@ -39,10 +39,6 @@ public class AppointmentOptionsSelectionServlet extends HttpServlet {
         request.setAttribute("pets", pets);
         request.setAttribute("services", services);
         request.getRequestDispatcher("appointment/selectAppointmentOptions.jsp").forward(request, response);
-
-        } else {
-            response.sendRedirect("login.jsp");
-        }
     }
 
     @Override

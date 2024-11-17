@@ -22,14 +22,9 @@ public class TimeSlotSelectionServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("client") != null) {
-            Map<LocalDate, List<TimeSlot>> availableSlots = timeSlotDao.findAvailableTimeSlots();
-            request.setAttribute("availableSlots", availableSlots);
-            request.getRequestDispatcher("appointment/selectTimeSlot.jsp").forward(request, response);
-
-        } else {
-            response.sendRedirect("login.jsp");
-        }
+        Map<LocalDate, List<TimeSlot>> availableSlots = timeSlotDao.findAvailableTimeSlots();
+        request.setAttribute("availableSlots", availableSlots);
+        request.getRequestDispatcher("appointment/selectTimeSlot.jsp").forward(request, response);
     }
 
     @Override

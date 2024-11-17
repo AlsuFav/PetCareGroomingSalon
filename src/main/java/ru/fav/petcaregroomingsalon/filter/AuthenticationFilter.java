@@ -9,7 +9,10 @@ import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
-@WebFilter({"/clientProfile", "/confirmAppointment", "/selectAppointmentOptions", "/availableSlots", "/selectTimeSlot"})
+@WebFilter({"/clientProfile", "/confirmAppointment", "/selectAppointmentOptions", "/availableSlots",
+        "/selectTimeSlot", "/appointmentDetails", "/cancelAppointment", "/addPet",
+        "/addPetInfo", "/petProfile", "/selectPetType",
+        "/editPet"})
 public class AuthenticationFilter implements Filter {
 
     @Override

@@ -10,6 +10,7 @@ import ru.fav.petcaregroomingsalon.dao.ClientDAO;
 import ru.fav.petcaregroomingsalon.entity.Client;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -26,12 +27,17 @@ public class LoginServlet extends HttpServlet {
             return;
         }
 
-        // Попытка найти клиента по email и паролю
-        Client client = clientDao.findByEmailAndPassword(email, password);
+
+        Client client;
+        try {
+            client = clientDao.findByEmailAndPassword(email, password);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
         if (client != null) {
             HttpSession session = request.getSession();
-            session.setAttribute("client", client); // Установка атрибута "client" в сессии
+            session.setAttribute("client", client);
             response.sendRedirect("clientProfile");
         } else {
             response.sendRedirect("login.jsp?error=invalid");

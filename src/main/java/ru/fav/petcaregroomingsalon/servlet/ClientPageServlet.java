@@ -25,24 +25,21 @@ public class ClientPageServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("client") != null) {
-            Client client = (Client) session.getAttribute("client");
+        Client client = (Client) session.getAttribute("client");
 
-            List<Pet> pets;
-            List<Appointment> upcomingAppointments;
-            try {
-                upcomingAppointments = appointmentDAO.findUpcomingByClientId(client.getId());
-                pets = petDAO.findAllByOwnerId(client.getId());
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-
-            request.setAttribute("pets", pets);
-            request.setAttribute("upcomingAppointments", upcomingAppointments);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("clientProfile.jsp");
-            dispatcher.forward(request, response);
-        } else {
-            response.sendRedirect("login.jsp");
+        List<Pet> pets;
+        List<Appointment> upcomingAppointments;
+        try {
+            upcomingAppointments = appointmentDAO.findUpcomingByClientId(client.getId());
+            pets = petDAO.findAllByOwnerId(client.getId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+
+        request.setAttribute("pets", pets);
+        request.setAttribute("upcomingAppointments", upcomingAppointments);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("clientProfile.jsp");
+        dispatcher.forward(request, response);
+
     }
 }

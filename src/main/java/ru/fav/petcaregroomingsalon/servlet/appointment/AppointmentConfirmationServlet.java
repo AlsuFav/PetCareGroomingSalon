@@ -23,22 +23,18 @@ public class AppointmentConfirmationServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        if (session != null && session.getAttribute("client") != null) {
-            Pet pet = (Pet) request.getSession().getAttribute("selectedPet");
-            Service service = (Service) request.getSession().getAttribute("selectedService");
 
-            try {
-                int price = servicePriceDao.findServicePriceForPetAndService(pet.getId(), service.getId());
-                request.setAttribute("price", price);
-                request.getRequestDispatcher("appointment/confirmAppointment.jsp").forward(request, response);
+        Pet pet = (Pet) request.getSession().getAttribute("selectedPet");
+        Service service = (Service) request.getSession().getAttribute("selectedService");
 
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            response.sendRedirect("login.jsp");
+        try {
+            int price = servicePriceDao.findServicePriceForPetAndService(pet.getId(), service.getId());
+            request.setAttribute("price", price);
+            request.getRequestDispatcher("appointment/confirmAppointment.jsp").forward(request, response);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
     @Override

@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -28,18 +29,15 @@
     <button type="submit">Войти</button>
 </form>
 
-<%
-    String error = request.getParameter("error");
-    if ("empty".equals(error)) {
-%>
-<p style="color: red;">Пожалуйста, заполните все поля.</p>
-<%
-} else if ("invalid".equals(error)) {
-%>
-<p style="color: red;">Неверный email или пароль. Попробуйте еще раз.</p>
-<%
-    }
-%>
+<c:if test="${param.error == 'empty'}">
+    <p style="color:red;">Пожалуйста, заполните все поля.</p>
+</c:if>
+
+<c:if test="${param.error == 'invalid'}">
+    <p style="color:red;">Неверный email или пароль. Попробуйте еще раз.</p>
+</c:if>
+
+
 </body>
 </html>
 

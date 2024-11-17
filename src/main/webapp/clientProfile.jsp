@@ -19,7 +19,7 @@
 <h2>Ваши питомцы:</h2>
 <c:if test="${not empty pets}">
     <c:forEach var="pet" items="${pets}">
-        ${pet.name} <br>
+        <a href="petProfile?petId=${pet.id}">${pet.name}</a> <br>
     </c:forEach>
 </c:if>
 
@@ -30,7 +30,7 @@
 
 <br>
 
-<p><a href="/addPet">Добавить питомца</a></p>
+<p><a href="selectPetType">Добавить питомца</a></p>
 
 <br>
 
@@ -38,11 +38,11 @@
 <h2>Предстоящие записи:</h2>
 <c:if test="${not empty upcomingAppointments}">
     <c:forEach var="appointment" items="${upcomingAppointments}">
-            Питомец: ${appointment.pet.name} <br>
-            Услуга: ${appointment.service.name} <br>
-            Дата: ${appointment.getDateAndTime()} <br>
-            Грумер: ${appointment.groomer.firstName} <br>
-            Цена: ${appointment.price}₽ <br>
+        <a href="appointmentDetails?appointmentId=${appointment.id}">${appointment.getDateAndTime()}</a> <br>
+        Питомец: ${appointment.pet.name} <br>
+        Услуга: ${appointment.service.name} <br>
+        Грумер: ${appointment.groomer.firstName} <br>
+        Цена: ${appointment.price}₽ <br>
     </c:forEach>
 </c:if>
 
