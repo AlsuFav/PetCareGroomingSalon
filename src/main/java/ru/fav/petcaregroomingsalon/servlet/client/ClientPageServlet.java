@@ -1,4 +1,4 @@
-package ru.fav.petcaregroomingsalon.servlet;
+package ru.fav.petcaregroomingsalon.servlet.client;
 
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
@@ -38,7 +38,7 @@ public class ClientPageServlet extends HttpServlet {
 
         request.setAttribute("pets", pets);
         request.setAttribute("upcomingAppointments", upcomingAppointments);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("clientProfile.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("client/clientProfile.jsp");
         dispatcher.forward(request, response);
 
     }

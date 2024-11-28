@@ -1,5 +1,6 @@
 package ru.fav.petcaregroomingsalon.servlet.pet;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,17 @@ import java.sql.SQLException;
 public class AddPetServlet extends HttpServlet {
     private final PetDAO petDao = new PetDAO();
     private final BreedDAO breedDao = new BreedDAO();
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServletException {
+        try {
+            request.setAttribute("breeds", breedDao.findAll());
+        } catch (SQLException e) {
+            throw new RuntimeException("Ошибка загрузки списка пород", e);
+        }
+
+        request.getRequestDispatcher("pet/addPet.jsp").forward(request, response);
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {

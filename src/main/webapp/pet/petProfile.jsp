@@ -37,6 +37,7 @@
 </c:if>
 
 <br>
+<p><a href="selectAppointmentOptions">Записать питомца на груминг</a></p>
 <p><a href="clientProfile">Вернуться в профиль клиента</a></p>
 
 </body>

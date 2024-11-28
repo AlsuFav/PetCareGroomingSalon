@@ -25,7 +25,7 @@ public class AuthenticationFilter implements Filter {
         if (session != null && session.getAttribute("client") != null) {
             chain.doFilter(request, response);
         } else {
-            httpResponse.sendRedirect("login.jsp");
+            httpResponse.sendRedirect("client/login.jsp");
         }
     }
 

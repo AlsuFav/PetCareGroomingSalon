@@ -1,4 +1,4 @@
-package ru.fav.petcaregroomingsalon.servlet;
+package ru.fav.petcaregroomingsalon.servlet.client;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -25,35 +25,46 @@ public class RegistrationServlet extends HttpServlet {
         String password = request.getParameter("password");
         String confirmPassword = request.getParameter("confirmPassword");
 
-        // Проверка на пустые поля и ошибки
-        if (email == null || email.isEmpty()) {
-            request.setAttribute("error", "Email не может быть пустым.");
-            request.getRequestDispatcher("registration.jsp").forward(request, response);
-            return;
-        }
-        if (password == null || password.isEmpty()) {
-            request.setAttribute("error", "Пароль не может быть пустым.");
-            request.getRequestDispatcher("registration.jsp").forward(request, response);
-            return;
-        }
-        if (!password.equals(confirmPassword)) {
-            request.setAttribute("error", "Пароли не совпадают.");
-            request.getRequestDispatcher("registration.jsp").forward(request, response);
-            return;
-        }
+        boolean hasErrors = false;
+
         if (firstName == null || firstName.isEmpty()) {
-            request.setAttribute("error", "Имя не может быть пустым.");
-            request.getRequestDispatcher("registration.jsp").forward(request, response);
+            request.setAttribute("errorFirstName", "Имя не может быть пустым.");
+            hasErrors = true;
+        }
+
+        if (lastName == null || lastName.isEmpty()) {
+            request.setAttribute("errorLastName", "Фамилия не может быть пустой.");
+        }
+
+        if (email == null || email.isEmpty()) {
+            request.setAttribute("errorEmail", "Email не может быть пустым.");
+            hasErrors = true;
+        } else {
+            try {
+                if (clientDao.findByEmail(email) != null) {
+                    request.setAttribute("errorEmail", "Пользователь с таким email уже существует.");
+                    hasErrors = true;
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if (password == null || password.isEmpty()) {
+            request.setAttribute("errorPassword", "Пароль не может быть пустым.");
+            hasErrors = true;
+        } else if (!password.equals(confirmPassword)) {
+            request.setAttribute("errorConfirmPassword", "Пароли не совпадают.");
+            hasErrors = true;
+        }
+
+        if (hasErrors) {
+            request.getRequestDispatcher("client/registration.jsp").forward(request, response);
             return;
         }
 
+        // Создание нового клиента
         try {
-            if (clientDao.findByEmail(email) != null) {
-                request.setAttribute("error", "Пользователь с таким email уже существует.");
-                request.getRequestDispatcher("registration.jsp").forward(request, response);
-                return;
-            }
-
             Client client = new Client(firstName, lastName, email, phone, password); // Пароль желательно хэшировать
             clientDao.create(client);
 
@@ -70,6 +81,6 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("registration.jsp");
+        response.sendRedirect("client/registration.jsp");
     }
 }

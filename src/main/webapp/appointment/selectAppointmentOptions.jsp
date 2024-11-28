@@ -12,24 +12,33 @@
     <title>Выбор питомца и услуги</title>
 </head>
 <body>
-<h2>Выберите питомца и услугу</h2>
 
-<form method="post" action="selectAppointmentOptions">
-    <label for="petId">Питомец:</label>
-    <select name="petId" id="petId" required>
-        <c:forEach var="pet" items="${pets}">
-            <option value="${pet.id}">${pet.name} (${pet.species})</option>
-        </c:forEach>
-    </select>
+<c:if test="${not empty pets}">
+    <h2>Выберите питомца и услугу</h2>
 
-    <label for="serviceId">Услуга:</label>
-    <select name="serviceId" id="serviceId" required>
-        <c:forEach var="service" items="${services}">
-            <option value="${service.id}">${service.name}</option>
-        </c:forEach>
-    </select>
+    <form method="post" action="selectAppointmentOptions">
+        <label for="petId">Питомец:</label>
+        <select name="petId" id="petId" required>
+            <c:forEach var="pet" items="${pets}">
+                <option value="${pet.id}">${pet.name} (${pet.species})</option>
+            </c:forEach>
+        </select>
 
-    <button type="submit">Далее</button>
-</form>
+        <label for="serviceId">Услуга:</label>
+        <select name="serviceId" id="serviceId" required>
+            <c:forEach var="service" items="${services}">
+                <option value="${service.id}">${service.name}</option>
+            </c:forEach>
+        </select>
+
+        <button type="submit">Далее</button>
+    </form>
+</c:if>
+
+<c:if test="${empty pets}">
+    <p>Для начала следует добавить питомца.</p>
+    <p><a href="addPet">Добавить</a></p>
+</c:if>
+
 </body>
 </html>

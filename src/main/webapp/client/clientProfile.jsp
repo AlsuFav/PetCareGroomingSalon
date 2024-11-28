@@ -30,7 +30,7 @@
 
 <br>
 
-<p><a href="selectPetType">Добавить питомца</a></p>
+<p><a href="addPet">Добавить питомца</a></p>
 
 <br>
 

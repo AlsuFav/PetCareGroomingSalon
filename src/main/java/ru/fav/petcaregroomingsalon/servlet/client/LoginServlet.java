@@ -1,4 +1,4 @@
-package ru.fav.petcaregroomingsalon.servlet;
+package ru.fav.petcaregroomingsalon.servlet.client;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -23,7 +23,7 @@ public class LoginServlet extends HttpServlet {
 
         // Проверка на пустые поля
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
-            response.sendRedirect("login.jsp?error=empty");
+            response.sendRedirect("client/login.jsp?error=empty");
             return;
         }
 
@@ -40,12 +40,12 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("client", client);
             response.sendRedirect("clientProfile");
         } else {
-            response.sendRedirect("login.jsp?error=invalid");
+            response.sendRedirect("client/login.jsp?error=invalid");
         }
     }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("client/login.jsp");
     }
 }
