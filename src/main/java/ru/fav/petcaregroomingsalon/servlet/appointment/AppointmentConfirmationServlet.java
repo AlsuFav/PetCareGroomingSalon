@@ -6,31 +6,35 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ru.fav.petcaregroomingsalon.dao.AppointmentDAO;
-import ru.fav.petcaregroomingsalon.dao.ServicePriceDAO;
-import ru.fav.petcaregroomingsalon.dao.TimeSlotDAO;
 import ru.fav.petcaregroomingsalon.entity.*;
+import ru.fav.petcaregroomingsalon.service.AppointmentService;
+import ru.fav.petcaregroomingsalon.service.ServicePriceService;
+import ru.fav.petcaregroomingsalon.service.TimeSlotService;
 
 import java.io.IOException;
 import java.sql.SQLException;
 
 @WebServlet("/confirmAppointment")
 public class AppointmentConfirmationServlet extends HttpServlet {
-    private final AppointmentDAO appointmentDao = new AppointmentDAO();
-    private final ServicePriceDAO servicePriceDao = new ServicePriceDAO();
-    private final TimeSlotDAO timeSlotDao = new TimeSlotDAO();
+    private AppointmentService appointmentService;
+    private ServicePriceService servicePriceService;
+    private TimeSlotService timeSlotService;
+
+    public void init(){
+        this.appointmentService = (AppointmentService) getServletContext().getAttribute("appointmentService");
+        this.servicePriceService = (ServicePriceService) getServletContext().getAttribute("servicePriceService");
+        this.timeSlotService = (TimeSlotService) getServletContext().getAttribute("timeSlotService");
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-
         Pet pet = (Pet) request.getSession().getAttribute("selectedPet");
         Service service = (Service) request.getSession().getAttribute("selectedService");
 
         try {
-            int price = servicePriceDao.findServicePriceForPetAndService(pet.getId(), service.getId());
+            int price = servicePriceService.findPriceForPetAndService(pet, service);
             request.setAttribute("price", price);
-            request.getRequestDispatcher("appointment/confirmAppointment.jsp").forward(request, response);
+            request.getRequestDispatcher("WEB-INF/views/appointment/confirmAppointment.jsp").forward(request, response);
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -52,8 +56,8 @@ public class AppointmentConfirmationServlet extends HttpServlet {
         appointment.setDate(timeSlot.getStartTime());
 
         try {
-            appointmentDao.create(appointment);
-            timeSlotDao.setTaken(timeSlot.getId());
+            appointmentService.create(appointment);
+            timeSlotService.setTaken(timeSlot);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

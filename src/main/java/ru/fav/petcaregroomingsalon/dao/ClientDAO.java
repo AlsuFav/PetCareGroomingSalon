@@ -1,18 +1,18 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Client;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 public class ClientDAO {
-    private DriverManagerDataSource dataSource;
+    private final DataSource dataSource;
 
-    public ClientDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-    }
 
     public void create(Client client) throws SQLException {
         String sql = "INSERT INTO client (first_name, last_name, email, phone, password) VALUES (?, ?, ?, ?, ?)";
@@ -27,67 +27,46 @@ public class ClientDAO {
         }
     }
 
-    public Client findById(int id) throws SQLException {
+    public Optional<Client> findById(int id) throws SQLException {
         String sql = "SELECT * FROM client WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Client(
+                return Optional.of( new Client(
                         resultSet.getInt("id"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"),
                         resultSet.getString("email"),
                         resultSet.getString("phone"),
                         resultSet.getString("password")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public Client findByEmailAndPassword(String email, String password) throws SQLException {
-        String sql = "SELECT * FROM client WHERE email = ? AND password = ?";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, email);
-            statement.setString(2, password); // Пароль должен быть хешированным
-            try (ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return new Client(
-                            resultSet.getInt("id"),
-                            resultSet.getString("first_name"),
-                            resultSet.getString("last_name"),
-                            email,
-                            resultSet.getString("phone"),
-                            password
-                    );
-                }
-            }
-        }
-        return null;
-    }
 
-    public Client findByEmail(String email) throws SQLException {
+    public Optional<Client> findByEmail(String email) throws SQLException {
         String sql = "SELECT * FROM client WHERE email = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, email);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return new Client(
+                    return Optional.of( new Client(
                             resultSet.getInt("id"),
                             resultSet.getString("first_name"),
                             resultSet.getString("last_name"),
                             email,
                             resultSet.getString("phone"),
                             resultSet.getString("password")
-                    );
+                    ));
                 }
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 

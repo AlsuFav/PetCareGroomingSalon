@@ -45,10 +45,10 @@ INSERT INTO service_price (service_id, species, breed_type, price) VALUES
 (3, 'кошка', NULL, 1800);
 
 INSERT INTO client (first_name, last_name, email, phone, password) VALUES
-('Анна', 'Сидорова', 'anna@example.com', '1234567890', 'password123'),
-('Иван', 'Петров', 'ivan@example.com', '0987654321', 'password123'),
-('Мария', 'Иванова', 'maria@example.com', '1122334455', 'password123'),
-('Павел', 'Иванов', 'pavel@example.com', '1234567890', 'password123');
+('Анна', 'Сидорова', 'anna@example.com', '1234567890', 'd8578edf8458ce06fbc5bb76a58c5ca4'), --qwerty
+('Иван', 'Петров', 'ivan@example.com', '0987654321', 'd8578edf8458ce06fbc5bb76a58c5ca4'), --qwerty
+('Мария', 'Иванова', 'maria@example.com', '1122334455', 'd8578edf8458ce06fbc5bb76a58c5ca4'), --qwerty
+('Павел', 'Иванов', 'pavel@example.com', '1234567890', 'd8578edf8458ce06fbc5bb76a58c5ca4'); --qwerty
 
 INSERT INTO groomer (first_name, last_name, career_start, email, phone) VALUES
                                                                             ('Иван', 'Иванов', '2020-01-01', 'ivan.groomer@example.com', '1112223333'),

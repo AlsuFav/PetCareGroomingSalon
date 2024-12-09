@@ -11,6 +11,7 @@ import ru.fav.petcaregroomingsalon.dao.ServiceDAO;
 import ru.fav.petcaregroomingsalon.entity.Client;
 import ru.fav.petcaregroomingsalon.entity.Pet;
 import ru.fav.petcaregroomingsalon.entity.Service;
+import ru.fav.petcaregroomingsalon.service.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -18,8 +19,13 @@ import java.util.List;
 
 @WebServlet("/selectAppointmentOptions")
 public class AppointmentOptionsSelectionServlet extends HttpServlet {
-    private final PetDAO petDao = new PetDAO();
-    private final ServiceDAO serviceDao = new ServiceDAO();
+    private PetService petService;
+    private ServiceService serviceService;
+
+    public void init(){
+        this.petService = (PetService) getServletContext().getAttribute("petService");
+        this.serviceService = (ServiceService) getServletContext().getAttribute("serviceService");
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -30,22 +36,22 @@ public class AppointmentOptionsSelectionServlet extends HttpServlet {
         List<Pet> pets;
         List<Service> services;
         try {
-            pets = petDao.findAllByOwnerId(client.getId());
-            services = serviceDao.findAll();
+            pets = petService.findAllByOwner(client);
+            services = serviceService.findAll();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
         request.setAttribute("pets", pets);
         request.setAttribute("services", services);
-        request.getRequestDispatcher("appointment/selectAppointmentOptions.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/appointment/selectAppointmentOptions.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
-            Pet pet = petDao.findById(Integer.parseInt(request.getParameter("petId")));
-            Service service = serviceDao.findById(Integer.parseInt(request.getParameter("serviceId")));
+            Pet pet = petService.findById(Integer.parseInt(request.getParameter("petId")));
+            Service service = serviceService.findById(Integer.parseInt(request.getParameter("serviceId")));
 
             request.getSession().setAttribute("selectedPet", pet);
             request.getSession().setAttribute("selectedService", service);

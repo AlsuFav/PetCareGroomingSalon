@@ -1,24 +1,23 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.BreedTypeEnum;
 import ru.fav.petcaregroomingsalon.entity.Pet;
 import ru.fav.petcaregroomingsalon.entity.ServicePrice;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
+import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 public class ServicePriceDAO {
-    private DriverManagerDataSource dataSource;
+    private final DataSource dataSource;
     private final PetDAO petDAO;
     private final ServiceDAO serviceDAO;
 
-    public ServicePriceDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-        petDAO = new PetDAO();
-        serviceDAO = new ServiceDAO();
-    }
 
     public void create(ServicePrice servicePrice) throws SQLException {
         String sql = "INSERT INTO service_price (service_id, species, breed_type, price) VALUES (?, ?, ?, ?)";
@@ -26,29 +25,29 @@ public class ServicePriceDAO {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, servicePrice.getService().getId());
             statement.setString(2, servicePrice.getSpecies());
-            statement.setString(3, servicePrice.getBreedType().name());
+            statement.setString(3, servicePrice.getBreedType() != null ? servicePrice.getBreedType().name() : null);
             statement.setInt(4, servicePrice.getPrice());
             statement.executeUpdate();
         }
     }
 
-    public ServicePrice findById(int id) throws SQLException {
+    public Optional<ServicePrice> findById(int id) throws SQLException {
         String sql = "SELECT * FROM service_price WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new ServicePrice(
+                return Optional.of( new ServicePrice(
                         resultSet.getInt("id"),
-                        new ServiceDAO().findById(resultSet.getInt("service_id")),
+                        serviceDAO.findById(resultSet.getInt("service_id")).orElse(null),
                         resultSet.getString("species"),
-                        BreedTypeEnum.valueOf(resultSet.getString("breed_type")),
+                        resultSet.getString("breed_type") != null ? BreedTypeEnum.valueOf(resultSet.getString("breed_type")) : null,
                         resultSet.getInt("price")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<ServicePrice> findAll() throws SQLException {
@@ -60,9 +59,9 @@ public class ServicePriceDAO {
             while (resultSet.next()) {
                 servicePrices.add(new ServicePrice(
                         resultSet.getInt("id"),
-                        new ServiceDAO().findById(resultSet.getInt("service_id")),
+                        serviceDAO.findById(resultSet.getInt("service_id")).orElse(null),
                         resultSet.getString("species"),
-                        BreedTypeEnum.valueOf(resultSet.getString("breed_type")),
+                        resultSet.getString("breed_type") != null ? BreedTypeEnum.valueOf(resultSet.getString("breed_type")) : null,
                         resultSet.getInt("price")
                 ));
             }
@@ -76,7 +75,7 @@ public class ServicePriceDAO {
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, servicePrice.getService().getId());
             statement.setString(2, servicePrice.getSpecies());
-            statement.setString(3, servicePrice.getBreedType().name());
+            statement.setString(3,  servicePrice.getBreedType() != null ? servicePrice.getBreedType().name() : null);
             statement.setInt(4, servicePrice.getPrice());
             statement.setInt(5, servicePrice.getId());
             statement.executeUpdate();
@@ -92,8 +91,13 @@ public class ServicePriceDAO {
         }
     }
 
-    public int findServicePriceForPetAndService(int petId, int serviceId) throws SQLException {
-        Pet pet = petDAO.findById(petId);
+    public int findPriceForPetAndService(int petId, int serviceId) throws SQLException {
+        Optional<Pet> optionalPet = petDAO.findById(petId);
+        Pet pet = optionalPet.orElse(null);
+        if (pet == null) {
+            throw new SQLException("Pet not found");
+        }
+
         String species = pet.getSpecies();
         String breedType;
 
@@ -113,7 +117,7 @@ public class ServicePriceDAO {
             AND (breed_type = ?::breed_type_enum OR breed_type IS NULL)
         """;
 
-        try (Connection connection = DriverManagerDataSource.getInstance().getConnection();
+        try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, serviceId);
             statement.setString(2, species);

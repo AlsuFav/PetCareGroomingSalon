@@ -6,11 +6,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ru.fav.petcaregroomingsalon.dao.BreedDAO;
-import ru.fav.petcaregroomingsalon.dao.PetDAO;
 import ru.fav.petcaregroomingsalon.entity.Breed;
 import ru.fav.petcaregroomingsalon.entity.Client;
 import ru.fav.petcaregroomingsalon.entity.Pet;
+import ru.fav.petcaregroomingsalon.service.*;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -18,18 +17,24 @@ import java.sql.SQLException;
 
 @WebServlet("/addPet")
 public class AddPetServlet extends HttpServlet {
-    private final PetDAO petDao = new PetDAO();
-    private final BreedDAO breedDao = new BreedDAO();
+    private PetService petService;
+    private BreedService breedService;
+
+    public void init(){
+        this.petService = (PetService) getServletContext().getAttribute("petService");
+        this.breedService = (BreedService) getServletContext().getAttribute("breedService");
+    }
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, ServletException {
         try {
-            request.setAttribute("breeds", breedDao.findAll());
+            request.setAttribute("breeds", breedService.findAll());
         } catch (SQLException e) {
             throw new RuntimeException("Ошибка загрузки списка пород", e);
         }
 
-        request.getRequestDispatcher("pet/addPet.jsp").forward(request, response);
+        request.getRequestDispatcher("WEB-INF/views/pet/addPet.jsp").forward(request, response);
     }
 
     @Override
@@ -45,7 +50,7 @@ public class AddPetServlet extends HttpServlet {
         if ("собака".equals(species)) {
             int breedId = Integer.parseInt(request.getParameter("breedId"));
             try {
-                breed = breedDao.findById(breedId);
+                breed = breedService.findById(breedId);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -53,7 +58,7 @@ public class AddPetServlet extends HttpServlet {
 
         Pet pet = new Pet(name, species, breed, birthDate, client);
         try {
-            petDao.create(pet);
+            petService.create(pet);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

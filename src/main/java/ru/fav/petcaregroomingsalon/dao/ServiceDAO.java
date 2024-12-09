@@ -1,18 +1,18 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Service;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 public class ServiceDAO {
-    private DriverManagerDataSource dataSource;
+    private final DataSource dataSource;
 
-    public ServiceDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-    }
 
     public void create(Service service) throws SQLException {
         String sql = "INSERT INTO service (name, description) VALUES (?, ?)";
@@ -24,21 +24,21 @@ public class ServiceDAO {
         }
     }
 
-    public Service findById(int id) throws SQLException {
+    public Optional<Service> findById(int id) throws SQLException {
         String sql = "SELECT * FROM service WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Service(
+                return Optional.of( new Service(
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("description")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Service> findAll() throws SQLException {

@@ -1,17 +1,14 @@
 package ru.fav.petcaregroomingsalon.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum BreedTypeEnum {
-    SMALL ("Маленькая"),
-    MEDIUM ("Средняя"),
-    LARGE ("Большая");
+    SMALL ("маленькая порода"),
+    MEDIUM ("средняя порода"),
+    LARGE ("большая порода");
 
     private final String title;
-
-    BreedTypeEnum(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
 }

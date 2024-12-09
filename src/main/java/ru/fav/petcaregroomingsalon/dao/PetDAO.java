@@ -1,22 +1,21 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Pet;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
+import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 public class PetDAO {
-    private final DriverManagerDataSource dataSource;
+    private final DataSource dataSource;
     private final ClientDAO clientDAO;
     private final BreedDAO breedDAO;
 
-    public PetDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-        this.clientDAO = new ClientDAO();
-        this.breedDAO = new BreedDAO();
-    }
 
     public void create(Pet pet) throws SQLException {
         String sql = "INSERT INTO pet (name, species, breed_id, birth_date, owner_id) VALUES (?, ?, ?, ?, ?)";
@@ -37,30 +36,30 @@ public class PetDAO {
         }
     }
 
-    public Pet findById(int id) throws SQLException {
+    public Optional<Pet> findById(int id) throws SQLException {
         String sql = "SELECT * FROM pet WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Pet(
+                return Optional.of( new Pet(
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("species"),
-                        breedDAO.findById(resultSet.getInt("breed_id")),
+                        breedDAO.findById(resultSet.getInt("breed_id")).orElse(null),
                         resultSet.getDate("birth_date"),
-                        clientDAO.findById(resultSet.getInt("owner_id"))
-                );
+                        clientDAO.findById(resultSet.getInt("owner_id")).orElse(null)
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Pet> findAllByOwnerId(int ownerId) throws SQLException {
         List<Pet> pets = new ArrayList<>();
         String sql = "SELECT * FROM pet WHERE owner_id = ?";
-        try (Connection connection = DriverManagerDataSource.getInstance().getConnection();
+        try (Connection connection = CustomDataSource.getInstance().getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, ownerId);
             ResultSet resultSet = statement.executeQuery();
@@ -69,9 +68,9 @@ public class PetDAO {
                 pet.setId(resultSet.getInt("id"));
                 pet.setName(resultSet.getString("name"));
                 pet.setSpecies(resultSet.getString("species"));
-                pet.setBreed(breedDAO.findById(resultSet.getInt("breed_id")));
+                pet.setBreed(breedDAO.findById(resultSet.getInt("breed_id")).orElse(null));
                 pet.setBirthDate(resultSet.getDate("birth_date"));
-                pet.setOwner(clientDAO.findById(ownerId));
+                pet.setOwner(clientDAO.findById(ownerId).orElse(null));
                 pets.add(pet);
             }
         }
@@ -89,9 +88,9 @@ public class PetDAO {
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
                         resultSet.getString("species"),
-                        breedDAO.findById(resultSet.getInt("breed_id")),
+                        breedDAO.findById(resultSet.getInt("breed_id")).orElse(null),
                         resultSet.getDate("birth_date"),
-                        clientDAO.findById(resultSet.getInt("owner_id"))
+                        clientDAO.findById(resultSet.getInt("owner_id")).orElse(null)
                 ));
             }
         }

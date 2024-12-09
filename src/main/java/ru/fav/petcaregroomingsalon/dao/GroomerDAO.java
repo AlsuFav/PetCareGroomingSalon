@@ -1,20 +1,19 @@
 package ru.fav.petcaregroomingsalon.dao;
 
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Groomer;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-
+@AllArgsConstructor
 public class GroomerDAO {
-    private DriverManagerDataSource dataSource;
+    private final DataSource dataSource;
 
-    public GroomerDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-    }
 
     public void create(Groomer groomer) throws SQLException {
         String sql = "INSERT INTO groomer (first_name, last_name, career_start, email, phone) VALUES (?, ?, ?, ?, ?)";
@@ -29,24 +28,24 @@ public class GroomerDAO {
         }
     }
 
-    public Groomer findById(int id) throws SQLException {
+    public Optional<Groomer> findById(int id) throws SQLException {
         String sql = "SELECT * FROM groomer WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Groomer(
+                return Optional.of( new Groomer(
                         resultSet.getInt("id"),
                         resultSet.getString("first_name"),
                         resultSet.getString("last_name"),
                         resultSet.getDate("career_start"),
                         resultSet.getString("email"),
                         resultSet.getString("phone")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Groomer> findAll() throws SQLException {

@@ -1,19 +1,18 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Breed;
 import ru.fav.petcaregroomingsalon.entity.BreedTypeEnum;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
-
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+@AllArgsConstructor
 public class BreedDAO {
-    private DriverManagerDataSource dataSource;
+    private DataSource dataSource;
 
-    public BreedDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-    }
 
     public void create(Breed breed) throws SQLException {
         String sql = "INSERT INTO breed (name, breed_type) VALUES (?, ?)";
@@ -25,21 +24,21 @@ public class BreedDAO {
         }
     }
 
-    public Breed findById(int id) throws SQLException {
+    public Optional<Breed> findById(int id) throws SQLException {
         String sql = "SELECT * FROM breed WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                return new Breed(
+                return Optional.of( new Breed(
                         resultSet.getInt("id"),
                         resultSet.getString("name"),
                         BreedTypeEnum.valueOf(resultSet.getString("breed_type"))
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
     public List<Breed> findAll() throws SQLException {

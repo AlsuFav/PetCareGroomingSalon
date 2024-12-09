@@ -1,23 +1,20 @@
 package ru.fav.petcaregroomingsalon.dao;
 
+import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Groomer;
 import ru.fav.petcaregroomingsalon.entity.TimeSlot;
-import ru.fav.petcaregroomingsalon.util.DriverManagerDataSource;
+import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.Date;
 
-
+@AllArgsConstructor
 public class TimeSlotDAO {
-    private final DriverManagerDataSource dataSource;
-    private final GroomerDAO groomerDao; // Объект для доступа к данным грумеров
+    private final DataSource dataSource;
+    private final GroomerDAO groomerDao;
 
-    public TimeSlotDAO() {
-        this.dataSource = DriverManagerDataSource.getInstance();
-        this.groomerDao = new GroomerDAO(); // Инициализация Dao для грумеров
-    }
 
     public void create(TimeSlot timeSlot) throws SQLException {
         String sql = "INSERT INTO time_slot (groomer_id, start_time, end_time, taken) VALUES (?, ?, ?, ?)";
@@ -31,27 +28,27 @@ public class TimeSlotDAO {
         }
     }
 
-    public TimeSlot findById(int id) throws SQLException {
+    public Optional<TimeSlot> findById(int id) throws SQLException {
         String sql = "SELECT * FROM time_slot where id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Groomer groomer = groomerDao.findById(resultSet.getInt("groomer_id"));
-                return new TimeSlot(
+                Optional<Groomer> groomer = groomerDao.findById(resultSet.getInt("groomer_id"));
+                return Optional.of( new TimeSlot(
                         resultSet.getInt("id"),
-                        groomer,
+                        groomer.orElse(null),
                         resultSet.getTimestamp("start_time"),
                         resultSet.getTimestamp("end_time"),
                         resultSet.getBoolean("taken")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
-    public TimeSlot findByStartTimeAndGroomerId(Timestamp startTime, int groomerId) throws SQLException {
+    public Optional<TimeSlot> findByStartTimeAndGroomerId(Timestamp startTime, int groomerId) throws SQLException {
         String sql = "SELECT * FROM time_slot where start_time = ? and groomer_id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -59,17 +56,17 @@ public class TimeSlotDAO {
             statement.setInt(2, groomerId);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
-                Groomer groomer = groomerDao.findById(groomerId);
-                return new TimeSlot(
+                Groomer groomer = groomerDao.findById(groomerId).orElse(null);
+                return Optional.of( new TimeSlot(
                         resultSet.getInt("id"),
                         groomer,
                         startTime,
                         resultSet.getTimestamp("end_time"),
                         resultSet.getBoolean("taken")
-                );
+                ));
             }
         }
-        return null;
+        return Optional.empty();
     }
 
 
@@ -80,7 +77,7 @@ public class TimeSlotDAO {
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
             while (resultSet.next()) {
-                Groomer groomer = groomerDao.findById(resultSet.getInt("groomer_id"));
+                Groomer groomer = groomerDao.findById(resultSet.getInt("groomer_id")).orElse(null);
                 TimeSlot timeSlot = new TimeSlot(
                         resultSet.getInt("id"),
                         groomer,
@@ -134,11 +131,11 @@ public class TimeSlotDAO {
         }
     }
 
-    public Map<LocalDate, List<TimeSlot>> findAvailableTimeSlots() {
+    public Map<LocalDate, List<TimeSlot>> findAvailableTimeSlots() throws SQLException {
         Map<LocalDate, List<TimeSlot>> availableSlots = new TreeMap<>();
         String sql = "SELECT * FROM time_slot WHERE taken = FALSE AND start_time > CURRENT_TIMESTAMP";
 
-        try (Connection connection = DriverManagerDataSource.getInstance().getConnection();
+        try (Connection connection = CustomDataSource.getInstance().getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
 
@@ -146,15 +143,13 @@ public class TimeSlotDAO {
                 LocalDate date = resultSet.getTimestamp("start_time").toLocalDateTime().toLocalDate();
                 TimeSlot timeSlot = new TimeSlot();
                 timeSlot.setId(resultSet.getInt("id"));
-                timeSlot.setGroomer(groomerDao.findById(resultSet.getInt("groomer_id")));
+                timeSlot.setGroomer(groomerDao.findById(resultSet.getInt("groomer_id")).orElse(null));
                 timeSlot.setStartTime(resultSet.getTimestamp("start_time"));
                 timeSlot.setEndTime(resultSet.getTimestamp("end_time"));
                 timeSlot.setTaken(resultSet.getBoolean("taken"));
 
                 availableSlots.computeIfAbsent(date, k -> new ArrayList<>()).add(timeSlot);
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         return availableSlots;
