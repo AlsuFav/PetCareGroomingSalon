@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.BreedTypeEnum;
 import ru.fav.petcaregroomingsalon.entity.Pet;
 import ru.fav.petcaregroomingsalon.entity.ServicePrice;
-import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -117,7 +116,7 @@ public class ServicePriceDAO {
             AND (breed_type = ?::breed_type_enum OR breed_type IS NULL)
         """;
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, serviceId);
             statement.setString(2, species);

@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Tails - Главная страница</title>
+    <title>Pet Care - Главная страница</title>
     <link rel="stylesheet" href="<c:url value='/css/styles.css' />">
     <link rel="stylesheet" href="<c:url value='/css/mainPage.css' />">
     <script src="<c:url value='/js/mainPage.js' />"></script>
@@ -92,9 +92,9 @@
     <section class="faq">
         <h2>Часто задаваемые вопросы</h2>
         <div class="question" onclick="toggleAnswer('q1')">
-            <p>Сколько времени занимает стрижка?</p>
+            <p>Сколько времени занимают услуги?</p>
             <div id="q1" class="answer">
-                <p>Стрижка занимает от 1,5 до 2 часов в зависимости от породы и состояния шерсти.</p>
+                <p>Услуга занимает от 1,5 до 2 часов в зависимости от вида услуги, породы и состояния шерсти.</p>
             </div>
         </div>
 

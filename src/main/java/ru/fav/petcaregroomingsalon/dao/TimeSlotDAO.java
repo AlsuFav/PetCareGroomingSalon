@@ -3,7 +3,6 @@ package ru.fav.petcaregroomingsalon.dao;
 import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Groomer;
 import ru.fav.petcaregroomingsalon.entity.TimeSlot;
-import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -20,7 +19,7 @@ public class TimeSlotDAO {
         String sql = "INSERT INTO time_slot (groomer_id, start_time, end_time, taken) VALUES (?, ?, ?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setInt(1, timeSlot.getGroomer().getId()); // Используем groomer для получения id
+            statement.setInt(1, timeSlot.getGroomer().getId());
             statement.setTimestamp(2, timeSlot.getStartTime());
             statement.setTimestamp(3, timeSlot.getEndTime());
             statement.setBoolean(4, timeSlot.isTaken());
@@ -135,7 +134,7 @@ public class TimeSlotDAO {
         Map<LocalDate, List<TimeSlot>> availableSlots = new TreeMap<>();
         String sql = "SELECT * FROM time_slot WHERE taken = FALSE AND start_time > CURRENT_TIMESTAMP";
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sql)) {
 

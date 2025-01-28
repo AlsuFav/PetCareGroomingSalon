@@ -30,6 +30,13 @@
                     <input type="password" id="password" name="password" required>
                 </div>
 
+                <div>
+                    <label>
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        Запомнить меня
+                    </label>
+                </div>
+
                 <button type="submit">Войти</button>
             </form>
 

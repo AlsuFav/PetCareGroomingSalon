@@ -36,10 +36,6 @@ public class AppointmentService {
     }
 
     public void updateAppointmentPricesForPet(Pet pet) throws SQLException {
-        for (Appointment appointment : appointmentDAO.findUpcomingByPetId(pet.getId())) {
-            int newPrice = servicePriceDAO.findPriceForPetAndService(pet.getId(), appointment.getService().getId());
-            appointment.setPrice(newPrice);
-            appointmentDAO.update(appointment);
-        }
+        appointmentDAO.updateAppointmentPricesForPet(pet.getId());
     }
 }
