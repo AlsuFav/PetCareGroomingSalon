@@ -30,7 +30,6 @@
                     </c:forEach>
 
                     <br>
-
                     <button type="submit">Далее</button>
                 </form>
             </c:if>

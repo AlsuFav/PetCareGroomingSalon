@@ -91,10 +91,10 @@ public class ClientEditServlet extends HttpServlet {
             client.setEmail(email);
 
             if (changePassword) {
-                client.setPassword(clientService.hashPassword(password));
+                client.setPassword(password);
             }
 
-            clientService.update(client);
+            clientService.update(client, changePassword);
 
             session.setAttribute("client", client);
             response.sendRedirect("clientProfile");

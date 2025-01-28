@@ -5,7 +5,6 @@ package ru.fav.petcaregroomingsalon.dao;
 import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Appointment;
 import ru.fav.petcaregroomingsalon.entity.TimeSlot;
-import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -17,6 +16,7 @@ import java.util.Optional;
 public class AppointmentDAO {
     private final DataSource dataSource;
     private final ServiceDAO serviceDAO;
+    private final ServicePriceDAO servicePriceDAO;
     private final TimeSlotDAO timeSlotDAO;
     private final PetDAO petDAO;
     private final GroomerDAO groomerDAO;
@@ -84,7 +84,7 @@ public class AppointmentDAO {
         String sql = "SELECT a.* FROM appointment a " +
                 "JOIN pet p ON a.pet_id = p.id " +
                 "WHERE p.owner_id = ? AND a.date > NOW()";
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, clientId);
             ResultSet resultSet = statement.executeQuery();
@@ -106,7 +106,7 @@ public class AppointmentDAO {
     public List<Appointment> findUpcomingByPetId(int petId) throws SQLException {
         List<Appointment> appointments = new ArrayList<>();
         String sql = "SELECT * FROM appointment WHERE pet_id = ? AND date > NOW()";
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, petId);
             ResultSet resultSet = statement.executeQuery();
@@ -128,7 +128,7 @@ public class AppointmentDAO {
 
     public void update(Appointment appointment) throws SQLException {
         String sql = "UPDATE appointment SET pet_id = ?, groomer_id = ?, service_id = ?, price = ?, date = ?, notes = ? WHERE id = ?";
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, appointment.getPet().getId());
             statement.setInt(2, appointment.getGroomer().getId());
@@ -153,10 +153,37 @@ public class AppointmentDAO {
             timeSlotDAO.setEmpty(optionalTimeSlot.get().getId());
         }
 
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, id);
             statement.executeUpdate();
+        }
+    }
+
+    public void updateAppointmentPricesForPet(int petId) throws SQLException {
+        String sql = "UPDATE appointment SET price = ? WHERE id = ?";
+
+        List<Appointment> appointments = findUpcomingByPetId(petId);
+
+        Connection connection = dataSource.getConnection();
+
+        try (connection) {
+            connection.setAutoCommit(false);
+
+            for (Appointment appointment : appointments) {
+                try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                    int newPrice = servicePriceDAO.findPriceForPetAndService(petId, appointment.getService().getId());
+
+                    statement.setInt(1, newPrice);
+                    statement.setInt(2, appointment.getId());
+                    statement.executeUpdate();
+                }
+            }
+
+            connection.commit();
+        } catch (SQLException e) {
+            connection.rollback();
+            throw e;
         }
     }
 }

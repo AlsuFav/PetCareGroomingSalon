@@ -2,7 +2,6 @@ package ru.fav.petcaregroomingsalon.dao;
 
 import lombok.AllArgsConstructor;
 import ru.fav.petcaregroomingsalon.entity.Pet;
-import ru.fav.petcaregroomingsalon.config.CustomDataSource;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -59,7 +58,7 @@ public class PetDAO {
     public List<Pet> findAllByOwnerId(int ownerId) throws SQLException {
         List<Pet> pets = new ArrayList<>();
         String sql = "SELECT * FROM pet WHERE owner_id = ?";
-        try (Connection connection = CustomDataSource.getInstance().getConnection();
+        try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, ownerId);
             ResultSet resultSet = statement.executeQuery();

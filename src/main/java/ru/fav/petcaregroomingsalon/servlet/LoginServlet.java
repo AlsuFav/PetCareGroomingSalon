@@ -2,15 +2,13 @@ package ru.fav.petcaregroomingsalon.servlet;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import ru.fav.petcaregroomingsalon.entity.Client;
 import ru.fav.petcaregroomingsalon.service.ClientService;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.UUID;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -24,6 +22,7 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String rememberMe = request.getParameter("rememberMe");
 
         if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
             request.getRequestDispatcher("WEB-INF/views/login.jsp?error=empty").forward(request, response);
@@ -39,6 +38,14 @@ public class LoginServlet extends HttpServlet {
         }
 
         if (client != null) {
+            if ("on".equals(rememberMe)) {
+                String rememberToken = UUID.randomUUID().toString();
+                clientService.rememberClient(client, rememberToken);
+                Cookie rememberCookie = new Cookie("rememberMe", rememberToken);
+                rememberCookie.setMaxAge(7 * 24 * 60 * 60);
+                response.addCookie(rememberCookie);
+            }
+
             HttpSession session = request.getSession();
             session.setAttribute("client", client);
             response.sendRedirect("clientProfile");

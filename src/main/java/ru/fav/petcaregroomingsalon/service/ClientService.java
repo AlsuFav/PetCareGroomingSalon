@@ -1,21 +1,25 @@
 package ru.fav.petcaregroomingsalon.service;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import ru.fav.petcaregroomingsalon.dao.ClientDAO;
 import ru.fav.petcaregroomingsalon.entity.Client;
 import ru.fav.petcaregroomingsalon.exception.EmailAlreadyExistsException;
 
-import java.security.MessageDigest;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+
 
 @AllArgsConstructor
 public class ClientService {
     private ClientDAO clientDAO;
+    private PasswordEncoder passwordEncoder;
+    private Map<String, Integer> rememberedClients;
 
     public Client login(String email, String password) throws SQLException {
-        String hashedPassword = hashPassword(password);
         return clientDAO.findByEmail(email)
-                .filter(client -> client.getPassword().equals(hashedPassword))
+                .filter(client -> passwordEncoder.matches(password, client.getPassword()))
                 .orElse(null);
     }
 
@@ -25,7 +29,7 @@ public class ClientService {
             throw new EmailAlreadyExistsException("Клиент с почтой " + client.getEmail() + " уже существует.");
         }
 
-        String hashedPassword = hashPassword(client.getPassword());
+        String hashedPassword = passwordEncoder.encode(client.getPassword());
         client.setPassword(hashedPassword);
         clientDAO.create(client);
     }
@@ -43,30 +47,31 @@ public class ClientService {
         clientDAO.delete(clientId);
     }
 
-    public void update(Client client) throws SQLException {
+    public void update(Client client, boolean changePassword) throws SQLException {
         if (clientDAO.findByEmail(client.getEmail()).isPresent()
                 && clientDAO.findByEmail(client.getEmail()).get().getId() != client.getId()) {
             throw new EmailAlreadyExistsException("Клиент с почтой " + client.getEmail() + " уже существует.");
         }
 
+        if (changePassword) {
+            String hashedPassword = passwordEncoder.encode(client.getPassword());
+            client.setPassword(hashedPassword);
+        }
+
         clientDAO.update(client);
     }
 
-    public String hashPassword(String password) {
-        try {
-            MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] hash = md.digest(password.getBytes());
-            StringBuilder hexString = new StringBuilder();
-            for (byte b : hash) {
-                String hex = Integer.toHexString(0xff & b);
-                if (hex.length() == 1) {
-                    hexString.append('0');
-                }
-                hexString.append(hex);
-            }
-            return hexString.toString();
-        } catch (Exception e) {
-            throw new RuntimeException("MD5 hashing failed", e);
-        }
+    public void rememberClient(Client client, String rememberToken) {
+        rememberedClients.put(rememberToken, client.getId());
+    }
+
+    public void logout(String token){
+        rememberedClients.remove(token);
+    }
+
+    public Client findByRememberToken(String token) throws SQLException {
+        int id = rememberedClients.get(token);
+
+        return clientDAO.findById(id).orElse(null);
     }
 }
