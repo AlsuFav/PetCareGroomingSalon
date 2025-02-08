@@ -722,3 +722,77 @@
 2025-01-28 23:41:45,967 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Response: 200
 2025-01-28 23:41:45,971 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Response: 200
 2025-01-28 23:41:45,973 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Response: 200
+2025-01-28 23:44:51,079 INFO o.f.c.FlywayExecutor [RMI TCP Connection(2)-127.0.0.1] Database: jdbc:postgresql://localhost:5432/petcare_db (PostgreSQL 16.3)
+2025-01-28 23:44:51,235 INFO o.f.c.i.c.DbValidate [RMI TCP Connection(2)-127.0.0.1] Successfully validated 2 migrations (execution time 00:00.072s)
+2025-01-28 23:44:51,312 INFO o.f.c.i.c.DbMigrate [RMI TCP Connection(2)-127.0.0.1] Current version of schema "public": 2
+2025-01-28 23:44:51,317 INFO o.f.c.i.c.DbMigrate [RMI TCP Connection(2)-127.0.0.1] Schema "public" is up to date. No migration necessary.
+2025-01-28 23:44:51,730 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Request: GET /PetCareGroomingSalon/
+2025-01-28 23:44:53,131 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Response: 200
+2025-01-28 23:44:53,312 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Request: GET /PetCareGroomingSalon/
+2025-01-28 23:44:53,315 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Response: 200
+2025-01-28 23:44:53,436 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Request: GET /PetCareGroomingSalon/css/styles.css
+2025-01-28 23:44:53,437 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Request: GET /PetCareGroomingSalon/css/mainPage.css
+2025-01-28 23:44:53,439 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Request: GET /PetCareGroomingSalon/assets/pet/grooming1.jpg
+2025-01-28 23:44:53,439 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Request: GET /PetCareGroomingSalon/assets/logotype.jpg
+2025-01-28 23:44:53,441 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Request: GET /PetCareGroomingSalon/js/mainPage.js
+2025-01-28 23:44:53,442 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Response: 200
+2025-01-28 23:44:53,442 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Response: 200
+2025-01-28 23:44:53,442 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Response: 200
+2025-01-28 23:44:53,442 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Response: 200
+2025-01-28 23:44:53,443 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Response: 200
+2025-01-28 23:44:53,448 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Request: GET /PetCareGroomingSalon/assets/pet/hygiene1.jpg
+2025-01-28 23:44:53,451 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Response: 200
+2025-01-28 23:44:53,458 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Request: GET /PetCareGroomingSalon/assets/pet/hygiene2.jpg
+2025-01-28 23:44:53,459 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Request: GET /PetCareGroomingSalon/assets/pet/coloring.jpg
+2025-01-28 23:44:53,458 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Request: GET /PetCareGroomingSalon/assets/pet/grooming2.jpg
+2025-01-28 23:44:53,461 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Request: GET /PetCareGroomingSalon/assets/pet/grooming3.jpg
+2025-01-28 23:44:53,468 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Response: 200
+2025-01-28 23:44:53,468 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Response: 200
+2025-01-28 23:44:53,471 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Request: GET /PetCareGroomingSalon/assets/salon/washZone.jpg
+2025-01-28 23:44:53,472 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Response: 200
+2025-01-28 23:44:53,473 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Request: GET /PetCareGroomingSalon/assets/salon/combZone.jpg
+2025-01-28 23:44:53,475 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Response: 200
+2025-01-28 23:44:53,482 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Response: 200
+2025-01-28 23:44:53,483 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Request: GET /PetCareGroomingSalon/assets/salon/receptionZone.jpg
+2025-01-28 23:44:53,483 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Response: 200
+2025-01-28 23:44:53,488 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Response: 200
+2025-02-08 23:10:41,101 INFO o.f.c.FlywayExecutor [RMI TCP Connection(2)-127.0.0.1] Database: jdbc:postgresql://localhost:5432/petcare_db (PostgreSQL 16.3)
+2025-02-08 23:10:41,231 INFO o.f.c.i.c.DbValidate [RMI TCP Connection(2)-127.0.0.1] Successfully validated 2 migrations (execution time 00:00.063s)
+2025-02-08 23:10:41,295 INFO o.f.c.i.c.DbMigrate [RMI TCP Connection(2)-127.0.0.1] Current version of schema "public": 2
+2025-02-08 23:10:41,301 INFO o.f.c.i.c.DbMigrate [RMI TCP Connection(2)-127.0.0.1] Schema "public" is up to date. No migration necessary.
+2025-02-08 23:10:41,980 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Request: GET /PetCareGroomingSalon/
+2025-02-08 23:10:43,197 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Response: 200
+2025-02-08 23:10:43,561 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Request: GET /PetCareGroomingSalon/
+2025-02-08 23:10:43,564 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Response: 200
+2025-02-08 23:10:43,628 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Request: GET /PetCareGroomingSalon/css/styles.css
+2025-02-08 23:10:43,630 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Request: GET /PetCareGroomingSalon/css/mainPage.css
+2025-02-08 23:10:43,635 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Request: GET /PetCareGroomingSalon/js/mainPage.js
+2025-02-08 23:10:43,637 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Request: GET /PetCareGroomingSalon/assets/logotype.jpg
+2025-02-08 23:10:43,638 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Request: GET /PetCareGroomingSalon/assets/pet/grooming1.jpg
+2025-02-08 23:10:43,639 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-6]  Response: 200
+2025-02-08 23:10:43,641 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Response: 200
+2025-02-08 23:10:43,641 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Response: 200
+2025-02-08 23:10:43,643 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Response: 200
+2025-02-08 23:10:43,643 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Response: 200
+2025-02-08 23:10:43,651 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Request: GET /PetCareGroomingSalon/assets/pet/hygiene1.jpg
+2025-02-08 23:10:43,656 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-1]  Response: 200
+2025-02-08 23:10:43,661 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Request: GET /PetCareGroomingSalon/assets/pet/grooming2.jpg
+2025-02-08 23:10:43,661 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Request: GET /PetCareGroomingSalon/assets/pet/hygiene2.jpg
+2025-02-08 23:10:43,668 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Request: GET /PetCareGroomingSalon/assets/pet/coloring.jpg
+2025-02-08 23:10:43,674 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Response: 200
+2025-02-08 23:10:43,674 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Request: GET /PetCareGroomingSalon/assets/pet/grooming3.jpg
+2025-02-08 23:10:43,675 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-2]  Response: 200
+2025-02-08 23:10:43,682 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Response: 200
+2025-02-08 23:10:43,682 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-5]  Response: 200
+2025-02-08 23:10:43,689 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Request: GET /PetCareGroomingSalon/assets/salon/combZone.jpg
+2025-02-08 23:10:43,695 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Request: GET /PetCareGroomingSalon/assets/salon/washZone.jpg
+2025-02-08 23:10:43,698 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-4]  Response: 200
+2025-02-08 23:10:43,701 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-9]  Response: 200
+2025-02-08 23:10:43,705 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Request: GET /PetCareGroomingSalon/assets/salon/receptionZone.jpg
+2025-02-08 23:10:43,711 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-7]  Response: 200
+2025-02-08 23:10:45,189 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Request: GET /PetCareGroomingSalon/login/
+2025-02-08 23:10:45,358 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-10]  Response: 200
+2025-02-08 23:10:47,486 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Request: POST /PetCareGroomingSalon/login
+2025-02-08 23:10:47,579 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-8]  Response: 302
+2025-02-08 23:10:47,583 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Request: GET /PetCareGroomingSalon/clientProfile
+2025-02-08 23:10:47,833 INFO r.f.p.f.LoggerFilter [http-nio-8080-exec-3]  Response: 200
