@@ -70,8 +70,12 @@ public class ClientService {
     }
 
     public Client findByRememberToken(String token) throws SQLException {
-        int id = rememberedClients.get(token);
+        if (rememberedClients.get(token) != null) {
+            int id = rememberedClients.get(token);
 
-        return clientDAO.findById(id).orElse(null);
+            return clientDAO.findById(id).orElse(null);
+        }
+
+        return null;
     }
 }
